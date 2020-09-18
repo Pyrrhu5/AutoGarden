@@ -177,6 +177,7 @@ void loop() {
 		led_tick();
 	}
 	
+	// sleep until the closest next tick
 	delay(fmin(nextTickSensor, nextTickLed) - now);
 	
 }
