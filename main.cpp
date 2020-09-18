@@ -30,6 +30,7 @@
  */
 
 #include "Arduino.h"
+#include "math.h"
 
 /* ========================================================================== */
 /*                              PINS DEFINITION                               */
@@ -49,10 +50,10 @@ const int FLIP_DELAY = 10;
 const int LED_DELAY = 500;
 // Duration between measure when soil has been detected moist enough
 // 						  hours 		 minutes 	    seconds
-const long SENSOR_DELAY = (1 * 3600000UL) + (0 * 60000UL) + (0 * 1000UL);
+const long SENSOR_DELAY = (4 * 3600000UL) + (0 * 60000UL) + (0 * 1000UL);
 // Level measure when the soil is considered too dry
 // higher is dryer
-const int WATER_REQUIRED_LEVEL = 200;
+const int WATER_REQUIRED_LEVEL = 150;
 
 /* ========================================================================== */
 /*                              GLOBAL VARIABLES                              */
@@ -60,9 +61,11 @@ const int WATER_REQUIRED_LEVEL = 200;
 float nextTickLed = millis();
 float nextTickSensor = millis();
 bool  shouldLedBlink= false;
+// Time to sleep between loops
+int DELAY = 0;
 
 
-void nice_time(long int duration, char* buff) {
+void pretty_time(long int duration, char* buff) {
 	/* 
  	 * Convert Arduino's time in milliseconds
  	 * to human readable values
@@ -135,7 +138,7 @@ void sensor_tick() {
 	}
 
 	char nice[13];
-	nice_time(now, nice);
+	pretty_time(now, nice);
 	char printBuffer[39];
 	sprintf(printBuffer,"%s - Moisture level is %d\n", nice, val);
 	Serial.print(printBuffer);
@@ -146,11 +149,12 @@ void led_tick() {
 
 	if ( shouldLedBlink ) {
 		digitalWrite( LED_PIN, !digitalRead(LED_PIN) );
+		nextTickLed = millis() + LED_DELAY;
 	} else {
 		digitalWrite ( LED_PIN, LOW );
+		nextTickLed = millis() + SENSOR_DELAY;
 	}
 
-	nextTickLed = millis() + LED_DELAY;
 }
 
 
@@ -164,12 +168,16 @@ void setup() {
 
 
 void loop() {
-	if ( millis() >= nextTickLed ) {
-		led_tick();
-	}
-	if ( millis() >= nextTickSensor ) {
+	float now = millis();
+	
+	if ( now >= nextTickSensor ) {
 		sensor_tick();
 	}
+	if ( now >= nextTickLed ) {
+		led_tick();
+	}
+	
+	delay(fmin(nextTickSensor, nextTickLed) - now);
 	
 }
 
