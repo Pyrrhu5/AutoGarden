@@ -1,91 +1,49 @@
-# <++>
+# AutoGarden
 
-**Version**: <++> 
+This is an Arduino project.
 
-<++>
+Blink a LED when the soil is not moister enough using two metal rodes planted into the soil (as moister sensors have a shitty lifespan).
 
-## Installation
+Meant to run on batteries, with the Arduino's power LED removed, it consumes around 1,35 mA.
 
-**Python**
+## COMPONANTS
+Schematics totally ripped off from [this article](
+http://gardenbot.org/howTo/soilMoisture/#The_local_circuit_-_simple_voltage)
 
-Python version 3.6 or above
+Two metal rodes (like screws, nails) consistently spaced by some non-conductive material (like packaging foam) and partially isolated up to the depth of the soil to measure (up to the point where to measure moisture, not the surface):
+- S0
+- S1
 
-_On Linux/Mac:_
-```bash
-python3 --version
-```
+One resistor : between 47k to 100k Ohms (depends on observed measures)
+- R0
 
-_On Windows_:
-```bash
-python --version
-```
+One resistor: 100 Ohms
+- R1
 
-**Clone the repository**
+One resistor: 1 kOhms (lower it if the LED is not bright enough)
+- R2
 
-Git is required
-```bash
-git --version
-```
+One LED
+- L
 
-Clone it
-```bash
-git clone <++> <Where you want to install it>
-```
+Arduino Nano
 
-**Dependencies**
+## WIRING
+Pin | Componant
+--- | ---
+A0 | S0 
+D2 | R0 to S1
+D3 | R1 to S0
+D4 | R2 to L+
+- |L- to GND
 
-Install dependencies:
+[Or just look at this](http://gardenbot.org/howTo/soilMoisture/soilMoisture_localCircuit_w-flip-flop_big.png)
 
-_On Linux/Mac:_
-```bash
-pip3 install -r requirements.txt
-```
+If everything is well wired, the moisture level should be 0
+when the rodes are not in contact with anything, and close to 1023 when in water.
 
-_On Windows_:
-```bash
-pip install -r requirements.txt
-```
-
-**Executable**
-
-Allows execution of entry point (not needed for Windows)
-```bash
-chmod +x <++>
-```
-
-**Bash shortcut**
-
-If you want to access it directly from the terminal (Linux and MacOsX) with the command `<++>`:
-
-```bash
-INSTALL_DIR="<the full path to the installation directory>"
-printf "# <++>\nalias <++>='${INSTALL_DIR}/<++>.py'" >> ~/.bash_aliases
-```
-
-**Update**
-
-```bash
-git pull
-```
-
-## Documentation
-See <++> 
-
-## Changelog
-See <++>
 
 ## License
 Unmodified [MIT license](https://opensource.org/licenses/MIT)
 
 See `License.md`
-
-## Contributing
-
-I welcome any suggestion, corrections or improvements via push requests or email.
-
-Please do report any bugs with:
-
-- the error message,
-- the log,
-- the steps to reproduce it,
-- the OS type and version
